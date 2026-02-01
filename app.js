@@ -1,4 +1,3 @@
-// QA Playground — intentionally imperfect demo app :)  (Учебный стенд)
 const $ = (id) => document.getElementById(id);
 
 const state = {
@@ -15,93 +14,89 @@ const state = {
   ],
 };
 
-function logEvent(text){
+function logEvent(text) {
   const box = $("eventLog");
-  if(!box) return;
+  if (!box) return;
   const ts = new Date().toLocaleTimeString();
   box.textContent = `[${ts}] ${text}\n` + box.textContent;
 }
 
-function readLS(key, fallback){
-  try{
+function readLS(key, fallback) {
+  try {
     const v = localStorage.getItem(key);
     return v ? JSON.parse(v) : fallback;
-  }catch(e){
+  } catch {
     return fallback;
   }
 }
-function writeLS(key, value){
+function writeLS(key, value) {
   localStorage.setItem(key, JSON.stringify(value));
 }
 
-function getUsers(){
+function getUsers() {
   return readLS("qa_users", []);
 }
-function setUsers(users){
+function setUsers(users) {
   writeLS("qa_users", users);
 }
 
-function getSession(){
+function getSession() {
   return readLS("qa_session", { user: null });
 }
-function setSession(session){
+function setSession(session) {
   writeLS("qa_session", session);
 }
 
-function getCart(){
+function getCart() {
   return readLS("qa_cart", []);
 }
-function setCart(cart){
+function setCart(cart) {
   writeLS("qa_cart", cart);
   updateCartBadge();
 }
 
-function updateCartBadge(){
+function updateCartBadge() {
   const cart = getCart();
   const count = cart.reduce((acc, it) => acc + (it.qty || 0), 0);
   const el = document.querySelector('[data-testid="cart-count"]');
-  if(el) el.textContent = String(count);
+  if (el) el.textContent = String(count);
 }
 
-function routeTo(route){
+function routeTo(route) {
   state.route = route;
-  document.querySelectorAll(".page").forEach(sec => {
+
+  document.querySelectorAll(".page").forEach((sec) => {
     const is = sec.getAttribute("data-page") === route;
     sec.classList.toggle("hidden", !is);
   });
-  document.querySelectorAll(".nav-btn").forEach(btn => {
-    btn.classList.toggle("active", btn.getAttribute("data-route") === route);
-  });
 
-  if(route === "catalog") renderCatalog();
-  if(route === "cart") renderCart();
-  if(route === "auth") renderAuth();
+  if (route === "catalog") renderCatalog();
+  if (route === "cart") renderCart();
+  if (route === "auth") renderAuth();
 }
 
-function maybeChaos(){
-  if(!state.chaos) return false;
-  // небольшой шанс "странности"
+function maybeChaos() {
+  if (!state.chaos) return false;
   return Math.random() < 0.25;
 }
 
-function setMsg(el, text, type){
-  el.classList.remove("ok","err");
+function setMsg(el, text, type) {
+  el.classList.remove("ok", "err");
   el.textContent = text;
-  if(type) el.classList.add(type);
+  if (type) el.classList.add(type);
 }
 
-function initNav(){
-  document.querySelectorAll(".nav-btn").forEach(btn => {
+function initNav() {
+  document.querySelectorAll(".nav-btn").forEach((btn) => {
     btn.addEventListener("click", () => routeTo(btn.getAttribute("data-route")));
   });
 }
 
-function initTheme(){
+function initTheme() {
   const toggle = $("themeToggle");
-  // намеренно сделано не идеально: переключение темы может вести себя странно при перезагрузке :)
   const saved = localStorage.getItem("qa_theme") || "dark";
   document.body.classList.toggle("light", saved === "light");
-  toggle.checked = (saved === "light");
+  toggle.checked = saved === "light";
 
   toggle.addEventListener("change", () => {
     const isLight = toggle.checked;
@@ -111,7 +106,7 @@ function initTheme(){
   });
 }
 
-function initChaos(){
+function initChaos() {
   const btn = $("chaosToggle");
   btn.addEventListener("click", () => {
     state.chaos = !state.chaos;
@@ -121,12 +116,12 @@ function initChaos(){
   });
 }
 
-function renderAuth(){
+function renderAuth() {
   const s = getSession();
   $("currentUser").textContent = s.user ? `${s.user.name} <${s.user.email}>` : "—";
 }
 
-function initAuth(){
+function initAuth() {
   const loginMsg = $("loginMsg");
   const regMsg = $("regMsg");
 
@@ -134,31 +129,24 @@ function initAuth(){
     const email = $("loginEmail").value.trim();
     const pass = $("loginPassword").value;
 
-    // некоторые проверки намеренно сделаны "нестрого"
-    if(!email){
-      setMsg(loginMsg, "Введите email.", "err");
-      return;
-    }
-    if(!pass){
-      setMsg(loginMsg, "Введите пароль.", "err");
-      return;
-    }
+    if (!email) return setMsg(loginMsg, "Введите email.", "err");
+    if (!pass) return setMsg(loginMsg, "Введите пароль.", "err");
 
     const users = getUsers();
-    const user = users.find(u => u.email === email);
+    const user = users.find((u) => u.email === email);
 
-    if(maybeChaos()){
+    if (maybeChaos()) {
       setMsg(loginMsg, "Сервис временно недоступен. Попробуйте позже.", "err");
-      logEvent("Login failed: chaos outage");
+      logEvent("Login failed: outage");
       return;
     }
 
-    if(!user){
+    if (!user) {
       setMsg(loginMsg, "Пользователь не найден.", "err");
       logEvent(`Login failed: user not found (${email})`);
       return;
     }
-    if(user.password !== pass){
+    if (user.password !== pass) {
       setMsg(loginMsg, "Неверный пароль.", "err");
       logEvent(`Login failed: wrong password (${email})`);
       return;
@@ -184,34 +172,20 @@ function initAuth(){
     const age = $("regAge").value;
     const terms = $("regTerms").checked;
 
-    // часть проверок специально сделана спорно, чтобы было что тестировать
-    if(!name){
-      setMsg(regMsg, "Введите имя.", "err");
-      return;
-    }
-    if(!email){
-      setMsg(regMsg, "Введите email.", "err");
-      return;
-    }
-    if(password.length < 8){
-      setMsg(regMsg, "Пароль слишком короткий.", "err");
-      return;
-    }
-    if(!terms){
-      setMsg(regMsg, "Нужно согласиться с правилами.", "err");
-      return;
-    }
+    if (!name) return setMsg(regMsg, "Введите имя.", "err");
+    if (!email) return setMsg(regMsg, "Введите email.", "err");
+    if (password.length < 8) return setMsg(regMsg, "Пароль слишком короткий.", "err");
+    if (!terms) return setMsg(regMsg, "Нужно согласиться с правилами.", "err");
 
     const users = getUsers();
-    const exists = users.some(u => u.email === email);
+    const exists = users.some((u) => u.email === email);
 
-    if(exists){
+    if (exists) {
       setMsg(regMsg, "Такой email уже зарегистрирован.", "err");
       logEvent(`Register failed: email exists (${email})`);
       return;
     }
 
-    // age иногда сохраняется странно (да, это тоже часть стенда)
     users.push({ name: name.trim(), email, password, age });
     setUsers(users);
 
@@ -220,7 +194,7 @@ function initAuth(){
   });
 }
 
-function productCard(p){
+function productCard(p) {
   return `
     <div class="product" data-testid="product-card-${p.id}">
       <h4 data-testid="product-name-${p.id}">${p.name}</h4>
@@ -240,68 +214,62 @@ function productCard(p){
   `;
 }
 
-function renderCatalog(){
+function renderCatalog() {
   const box = $("products");
   const msg = $("catalogMsg");
   const q = $("searchInput").value;
   const cat = $("categorySelect").value;
 
-  // намеренно "странный" поиск, чтобы было что тестировать
   let items = state.products.slice();
-  if(cat !== "all"){
-    items = items.filter(p => p.category === cat);
-  }
-  if(q){
-    items = items.filter(p => p.name.includes(q)); // да, чувствительно к регистру
-  }
+  if (cat !== "all") items = items.filter((p) => p.category === cat);
+  if (q) items = items.filter((p) => p.name.includes(q));
 
   box.innerHTML = items.map(productCard).join("");
 
-  if(items.length === 0){
-    setMsg(msg, "Ничего не найдено. Попробуйте изменить запрос.", "err");
-  }else{
-    setMsg(msg, `Найдено товаров: ${items.length}`, "ok");
-  }
+  if (items.length === 0) setMsg(msg, "Ничего не найдено. Попробуйте изменить запрос.", "err");
+  else setMsg(msg, `Найдено товаров: ${items.length}`, "ok");
 }
 
-function initCatalog(){
+function initCatalog() {
   $("searchBtn").addEventListener("click", renderCatalog);
   $("categorySelect").addEventListener("change", renderCatalog);
 }
 
-window.addToCart = function(productId){
+window.addToCart = function (productId) {
   const qtyEl = document.getElementById(`qty_${productId}`);
-  const qtyRaw = (qtyEl ? qtyEl.value : "1");
+  const qtyRaw = qtyEl ? qtyEl.value : "1";
   const qty = parseInt(qtyRaw, 10);
 
   const cart = getCart();
-  const p = state.products.find(x => x.id === productId);
-  if(!p) return;
+  const p = state.products.find((x) => x.id === productId);
+  if (!p) return;
 
-  if(maybeChaos()){
-    logEvent("Add to cart failed: chaos");
+  if (maybeChaos()) {
+    logEvent("Add to cart failed");
     alert("Ошибка добавления. Попробуйте ещё раз.");
     return;
   }
 
-  const existing = cart.find(it => it.id === productId);
-  if(existing){
-    existing.qty += (isNaN(qty) ? 1 : qty);
-  }else{
-    cart.push({ id: p.id, name: p.name, price: p.price, qty: (isNaN(qty) ? 1 : qty) });
-  }
+  const existing = cart.find((it) => it.id === productId);
+  const add = isNaN(qty) ? 1 : qty;
+
+  if (existing) existing.qty += add;
+  else cart.push({ id: p.id, name: p.name, price: p.price, qty: add });
+
   setCart(cart);
-  logEvent(`Added to cart: ${productId} x${isNaN(qty) ? 1 : qty}`);
+  logEvent(`Added to cart: ${productId} x${add}`);
 };
 
-function renderCart(){
+function renderCart() {
   const list = $("cartList");
   const cart = getCart();
 
-  if(cart.length === 0){
+  if (cart.length === 0) {
     list.innerHTML = `<div class="msg err">Корзина пуста.</div>`;
-  }else{
-    list.innerHTML = cart.map(it => `
+  } else {
+    list.innerHTML = cart
+      .map(
+        (it) => `
       <div class="cart-item" data-testid="cart-item-${it.id}">
         <div class="cart-left">
           <div class="cart-title" data-testid="cart-name-${it.id}">${it.name}</div>
@@ -314,62 +282,59 @@ function renderCart(){
           <button class="danger" data-testid="cart-del-${it.id}" onclick="delItem('${it.id}')">Удалить</button>
         </div>
       </div>
-    `).join("");
+    `
+      )
+      .join("");
   }
 
   recalcTotals();
 }
 
-window.incQty = function(id){
+window.incQty = function (id) {
   const cart = getCart();
-  const it = cart.find(x => x.id === id);
-  if(!it) return;
+  const it = cart.find((x) => x.id === id);
+  if (!it) return;
   it.qty += 1;
   setCart(cart);
   renderCart();
   logEvent(`Qty inc: ${id}`);
 };
 
-window.decQty = function(id){
+window.decQty = function (id) {
   const cart = getCart();
-  const it = cart.find(x => x.id === id);
-  if(!it) return;
-  it.qty -= 1; // intentionally allows strange values :)
+  const it = cart.find((x) => x.id === id);
+  if (!it) return;
+  it.qty -= 1;
   setCart(cart);
   renderCart();
   logEvent(`Qty dec: ${id}`);
 };
 
-window.setQty = function(id, val){
+window.setQty = function (id, val) {
   const cart = getCart();
-  const it = cart.find(x => x.id === id);
-  if(!it) return;
+  const it = cart.find((x) => x.id === id);
+  if (!it) return;
   it.qty = parseInt(val, 10);
   setCart(cart);
   renderCart();
   logEvent(`Qty set: ${id}=${val}`);
 };
 
-window.delItem = function(id){
+window.delItem = function (id) {
   let cart = getCart();
-  cart = cart.filter(x => x.id !== id);
+  cart = cart.filter((x) => x.id !== id);
   setCart(cart);
   renderCart();
   logEvent(`Item removed: ${id}`);
 };
 
-function recalcTotals(){
+function recalcTotals() {
   const cart = getCart();
-  const sum = cart.reduce((acc, it) => acc + (it.price * (it.qty || 0)), 0);
+  const sum = cart.reduce((acc, it) => acc + it.price * (it.qty || 0), 0);
 
   let discount = 0;
-  // купон специально сделан не идеально
-  if(state.coupon === "SAVE10"){
-    discount = Math.round(sum * 0.10);
-  }
-  if(state.coupon === "FREE"){
-    discount = 999999; // intentionally odd :)
-  }
+  if (state.coupon === "SAVE10") discount = Math.round(sum * 0.1);
+  if (state.coupon === "FREE") discount = 999999;
 
   const pay = sum - discount;
 
@@ -378,7 +343,7 @@ function recalcTotals(){
   $("totalPay").textContent = String(pay);
 }
 
-function initCart(){
+function initCart() {
   $("cartClear").addEventListener("click", () => {
     setCart([]);
     state.coupon = null;
@@ -392,9 +357,9 @@ function initCart(){
   $("couponApply").addEventListener("click", () => {
     const code = $("couponInput").value.trim();
 
-    if(maybeChaos()){
+    if (maybeChaos()) {
       setMsg($("couponMsg"), "Ошибка применения купона. Повторите попытку.", "err");
-      logEvent("Coupon apply failed: chaos");
+      logEvent("Coupon apply failed");
       return;
     }
 
@@ -408,61 +373,58 @@ function initCart(){
     const msg = $("checkoutMsg");
     const s = getSession();
 
-    if(!s.user){
+    if (!s.user) {
       setMsg(msg, "Чтобы оформить заказ, нужно войти в аккаунт.", "err");
       logEvent("Checkout failed: not logged in");
       return;
     }
 
     const cart = getCart();
-    if(cart.length === 0){
+    if (cart.length === 0) {
       setMsg(msg, "Корзина пуста.", "err");
       logEvent("Checkout failed: empty cart");
       return;
     }
 
-    if(maybeChaos()){
+    if (maybeChaos()) {
       setMsg(msg, "Оплата не прошла. Попробуйте ещё раз.", "err");
-      logEvent("Checkout failed: chaos payment");
+      logEvent("Checkout failed");
       return;
     }
 
-    setMsg(msg, "Заказ оформлен! Спасибо 🙂", "ok");
+    setMsg(msg, "Заказ оформлен! Спасибо.", "ok");
     logEvent(`Checkout success by ${s.user.email}`);
   });
 }
 
-function initFeedback(){
+function initFeedback() {
   $("fbSend").addEventListener("click", () => {
     const last = $("fbLastname").value;
     const topic = $("fbTopic").value;
     const text = $("fbMessage").value;
 
-    // Валидации специально сделаны спорно
-    if(!topic){
+    if (!topic) {
       setMsg($("fbMsg"), "Выберите тему.", "err");
       logEvent("Feedback failed: no topic");
       return;
     }
-    if(text.length < 5){
+    if (text.length < 5) {
       setMsg($("fbMsg"), "Сообщение слишком короткое.", "err");
       logEvent("Feedback failed: too short message");
       return;
     }
 
-    // "симуляция отправки"
-    if(maybeChaos()){
+    if (maybeChaos()) {
       setMsg($("fbMsg"), "Сервер не отвечает. Попробуйте позже.", "err");
-      logEvent("Feedback failed: chaos");
+      logEvent("Feedback failed");
       return;
     }
 
-    setMsg($("fbMsg"), `Отправлено! Тема: ${topic}. Спасибо!`, "ok");
+    setMsg($("fbMsg"), `Отправлено! Тема: ${topic}.`, "ok");
     logEvent(`Feedback sent: last="${last}", topic="${topic}"`);
   });
 }
 
-// init
 document.addEventListener("DOMContentLoaded", () => {
   initNav();
   initTheme();
@@ -475,6 +437,5 @@ document.addEventListener("DOMContentLoaded", () => {
 
   updateCartBadge();
   routeTo("home");
-
   logEvent("App started");
 });
