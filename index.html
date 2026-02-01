@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>QA Playground — Учебный сайт</title>
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+  <header class="header">
+    <div class="brand">
+      <div class="logo">QA</div>
+      <div>
+        <div class="title">QA Playground</div>
+        <div class="subtitle">Учебный сайт для тестирования (ручного + авто)</div>
+      </div>
+    </div>
+
+    <nav class="nav">
+      <button class="nav-btn" data-testid="nav-home" data-route="home">Главная</button>
+      <button class="nav-btn" data-testid="nav-auth" data-route="auth">Вход/Регистрация</button>
+      <button class="nav-btn" data-testid="nav-catalog" data-route="catalog">Каталог</button>
+      <button class="nav-btn" data-testid="nav-cart" data-route="cart">
+        Корзина <span class="badge" data-testid="cart-count">0</span>
+      </button>
+      <button class="nav-btn" data-testid="nav-feedback" data-route="feedback">Обратная связь</button>
+    </nav>
+
+    <div class="actions">
+      <label class="switch">
+        <input type="checkbox" data-testid="theme-toggle" id="themeToggle">
+        <span class="slider"></span>
+      </label>
+      <button class="danger" data-testid="chaos-toggle" id="chaosToggle">Chaos: OFF</button>
+    </div>
+  </header>
+
+  <main class="main">
+    <!-- HOME -->
+    <section class="page" data-page="home">
+      <div class="card">
+        <h1>Привет! 👋</h1>
+        <p>
+          Здесь можно тестировать формы, поиск, корзину, сообщения, ошибки, UI и “странное поведение”.
+          Отлично подходит для урока: сначала ручное тестирование, потом запись автотестов в Selenium IDE.
+        </p>
+
+        <div class="grid2">
+          <div class="mini">
+            <h3>Что можно тестировать</h3>
+            <ul>
+              <li>Форма входа/регистрации</li>
+              <li>Валидации полей</li>
+              <li>Поиск/фильтры</li>
+              <li>Корзина, количество, купоны</li>
+              <li>Смена темы</li>
+              <li>Сообщения об ошибках</li>
+            </ul>
+          </div>
+          <div class="mini">
+            <h3>Быстрый старт</h3>
+            <ol>
+              <li>Открой «Вход/Регистрация»</li>
+              <li>Создай аккаунт</li>
+              <li>Зайди под ним</li>
+              <li>Перейди в «Каталог», добавь товары</li>
+              <li>Открой «Корзина», попробуй изменить количество</li>
+              <li>Запиши автотест в Selenium IDE</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="note">
+          Подсказка: для Selenium IDE используй атрибуты <code>data-testid</code> — они уже есть почти везде.
+        </div>
+      </div>
+    </section>
+
+    <!-- AUTH -->
+    <section class="page hidden" data-page="auth">
+      <div class="grid2">
+        <div class="card">
+          <h2>Вход</h2>
+
+          <div class="field">
+            <label>Email</label>
+            <input data-testid="login-email" id="loginEmail" placeholder="name@example.com" />
+            <div class="hint" data-testid="login-email-hint"></div>
+          </div>
+
+          <div class="field">
+            <label>Пароль</label>
+            <input data-testid="login-password" id="loginPassword" type="password" placeholder="••••••••" />
+            <div class="hint" data-testid="login-password-hint"></div>
+          </div>
+
+          <button class="primary" data-testid="login-btn" id="loginBtn">Войти</button>
+
+          <div class="msg" data-testid="login-msg" id="loginMsg"></div>
+          <div class="divider"></div>
+
+          <div class="small">
+            <span>Текущий пользователь:</span>
+            <b data-testid="current-user" id="currentUser">—</b>
+          </div>
+
+          <button class="ghost" data-testid="logout-btn" id="logoutBtn">Выйти</button>
+        </div>
+
+        <div class="card">
+          <h2>Регистрация</h2>
+
+          <div class="field">
+            <label>Имя</label>
+            <input data-testid="reg-name" id="regName" placeholder="Иван" />
+            <div class="hint" data-testid="reg-name-hint"></div>
+          </div>
+
+          <div class="field">
+            <label>Email</label>
+            <input data-testid="reg-email" id="regEmail" placeholder="name@example.com" />
+            <div class="hint" data-testid="reg-email-hint"></div>
+          </div>
+
+          <div class="field">
+            <label>Пароль</label>
+            <input data-testid="reg-password" id="regPassword" type="password" placeholder="минимум 8 символов" />
+            <div class="hint" data-testid="reg-password-hint"></div>
+          </div>
+
+          <div class="field">
+            <label>Возраст</label>
+            <select data-testid="reg-age" id="regAge">
+              <option value="">Выбери возраст</option>
+              <option>8</option>
+              <option>9</option>
+              <option>10</option>
+              <option>11</option>
+              <option>12</option>
+              <option>13</option>
+              <option>14</option>
+            </select>
+            <div class="hint" data-testid="reg-age-hint"></div>
+          </div>
+
+          <label class="check">
+            <input data-testid="reg-terms" id="regTerms" type="checkbox" />
+            <span>Я согласен с правилами</span>
+          </label>
+
+          <button class="primary" data-testid="reg-btn" id="regBtn">Создать аккаунт</button>
+
+          <div class="msg" data-testid="reg-msg" id="regMsg"></div>
+
+          <div class="note">
+            Подсказка для тестов: попробуй необычные символы, пробелы, пустые значения, разные регистры, крайние значения.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CATALOG -->
+    <section class="page hidden" data-page="catalog">
+      <div class="card">
+        <div class="catalog-head">
+          <h2>Каталог</h2>
+
+          <div class="catalog-controls">
+            <input data-testid="search-input" id="searchInput" placeholder="Поиск по товарам..." />
+            <select data-testid="category-select" id="categorySelect">
+              <option value="all">Все категории</option>
+              <option value="games">Игры</option>
+              <option value="edu">Обучение</option>
+              <option value="gadgets">Гаджеты</option>
+            </select>
+            <button class="ghost" data-testid="search-btn" id="searchBtn">Найти</button>
+          </div>
+        </div>
+
+        <div class="products" data-testid="products" id="products"></div>
+
+        <div class="msg" data-testid="catalog-msg" id="catalogMsg"></div>
+      </div>
+    </section>
+
+    <!-- CART -->
+    <section class="page hidden" data-page="cart">
+      <div class="card">
+        <div class="catalog-head">
+          <h2>Корзина</h2>
+          <button class="ghost" data-testid="cart-clear" id="cartClear">Очистить</button>
+        </div>
+
+        <div class="cart" data-testid="cart-list" id="cartList"></div>
+
+        <div class="grid2">
+          <div class="mini">
+            <h3>Купон</h3>
+            <div class="field">
+              <label>Промокод</label>
+              <input data-testid="coupon-input" id="couponInput" placeholder="Например: SAVE10" />
+              <div class="hint" data-testid="coupon-hint" id="couponHint"></div>
+            </div>
+            <button class="primary" data-testid="coupon-apply" id="couponApply">Применить</button>
+            <div class="msg" data-testid="coupon-msg" id="couponMsg"></div>
+          </div>
+
+          <div class="mini">
+            <h3>Итого</h3>
+            <div class="totals">
+              <div><span>Сумма:</span> <b data-testid="total-sum" id="totalSum">0</b> ₽</div>
+              <div><span>Скидка:</span> <b data-testid="total-discount" id="totalDiscount">0</b> ₽</div>
+              <div class="grand"><span>К оплате:</span> <b data-testid="total-pay" id="totalPay">0</b> ₽</div>
+            </div>
+            <button class="primary" data-testid="checkout-btn" id="checkoutBtn">Оформить</button>
+            <div class="msg" data-testid="checkout-msg" id="checkoutMsg"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FEEDBACK -->
+    <section class="page hidden" data-page="feedback">
+      <div class="card">
+        <h2>Обратная связь</h2>
+        <p class="small">Форма специально сделана так, чтобы её было интересно тестировать 🙂</p>
+
+        <div class="field">
+          <label>Фамилия</label>
+          <input data-testid="fb-lastname" id="fbLastname" placeholder="Петров" />
+          <div class="hint" data-testid="fb-lastname-hint" id="fbLastnameHint"></div>
+        </div>
+
+        <div class="field">
+          <label>Тема</label>
+          <select data-testid="fb-topic" id="fbTopic">
+            <option value="">Выбери тему</option>
+            <option value="bug">Нашёл баг</option>
+            <option value="idea">Есть идея</option>
+            <option value="other">Другое</option>
+          </select>
+          <div class="hint" data-testid="fb-topic-hint" id="fbTopicHint"></div>
+        </div>
+
+        <div class="field">
+          <label>Сообщение</label>
+          <textarea data-testid="fb-message" id="fbMessage" rows="4" placeholder="Опиши проблему или идею..."></textarea>
+          <div class="hint" data-testid="fb-message-hint" id="fbMessageHint"></div>
+        </div>
+
+        <button class="primary" data-testid="fb-send" id="fbSend">Отправить</button>
+        <div class="msg" data-testid="fb-msg" id="fbMsg"></div>
+
+        <div class="divider"></div>
+        <h3>Журнал событий</h3>
+        <div class="log" data-testid="event-log" id="eventLog"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="small">
+      QA Playground • Для учебных занятий • Версия 1.0
+    </div>
+  </footer>
+
+  <script src="./app.js"></script>
+</body>
+</html>
