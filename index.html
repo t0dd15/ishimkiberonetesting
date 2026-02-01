@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>QA Playground — Учебный сайт</title>
+  <title>QA Playground</title>
   <link rel="stylesheet" href="./style.css" />
 </head>
 <body>
@@ -12,7 +12,7 @@
       <div class="logo">QA</div>
       <div>
         <div class="title">QA Playground</div>
-        <div class="subtitle">Учебный сайт для тестирования (ручного + авто)</div>
+        <div class="subtitle">Тестовый сайт</div>
       </div>
     </div>
 
@@ -36,47 +36,33 @@
   </header>
 
   <main class="main">
-    <!-- HOME -->
     <section class="page" data-page="home">
       <div class="card">
-        <h1>Привет! 👋</h1>
-        <p>
-          Здесь можно тестировать формы, поиск, корзину, сообщения, ошибки, UI и “странное поведение”.
-          Отлично подходит для урока: сначала ручное тестирование, потом запись автотестов в Selenium IDE.
-        </p>
+        <h1>Привет!</h1>
+        <p>Проверь работу форм, поиска, корзины, купонов и сообщений.</p>
 
         <div class="grid2">
           <div class="mini">
-            <h3>Что можно тестировать</h3>
+            <h3>Разделы</h3>
             <ul>
-              <li>Форма входа/регистрации</li>
-              <li>Валидации полей</li>
-              <li>Поиск/фильтры</li>
-              <li>Корзина, количество, купоны</li>
-              <li>Смена темы</li>
-              <li>Сообщения об ошибках</li>
+              <li>Вход/Регистрация</li>
+              <li>Каталог</li>
+              <li>Корзина</li>
+              <li>Обратная связь</li>
             </ul>
           </div>
           <div class="mini">
-            <h3>Быстрый старт</h3>
-            <ol>
-              <li>Открой «Вход/Регистрация»</li>
-              <li>Создай аккаунт</li>
-              <li>Зайди под ним</li>
-              <li>Перейди в «Каталог», добавь товары</li>
-              <li>Открой «Корзина», попробуй изменить количество</li>
-              <li>Запиши автотест в Selenium IDE</li>
-            </ol>
+            <h3>Цель</h3>
+            <ul>
+              <li>Найти ошибки</li>
+              <li>Описать баг-репорты</li>
+              <li>Записать автотесты (по желанию)</li>
+            </ul>
           </div>
-        </div>
-
-        <div class="note">
-          Подсказка: для Selenium IDE используй атрибуты <code>data-testid</code> — они уже есть почти везде.
         </div>
       </div>
     </section>
 
-    <!-- AUTH -->
     <section class="page hidden" data-page="auth">
       <div class="grid2">
         <div class="card">
@@ -151,15 +137,10 @@
           <button class="primary" data-testid="reg-btn" id="regBtn">Создать аккаунт</button>
 
           <div class="msg" data-testid="reg-msg" id="regMsg"></div>
-
-          <div class="note">
-            Подсказка для тестов: попробуй необычные символы, пробелы, пустые значения, разные регистры, крайние значения.
-          </div>
         </div>
       </div>
     </section>
 
-    <!-- CATALOG -->
     <section class="page hidden" data-page="catalog">
       <div class="card">
         <div class="catalog-head">
@@ -183,7 +164,6 @@
       </div>
     </section>
 
-    <!-- CART -->
     <section class="page hidden" data-page="cart">
       <div class="card">
         <div class="catalog-head">
@@ -198,7 +178,7 @@
             <h3>Купон</h3>
             <div class="field">
               <label>Промокод</label>
-              <input data-testid="coupon-input" id="couponInput" placeholder="Например: SAVE10" />
+              <input data-testid="coupon-input" id="couponInput" placeholder="Промокод" />
               <div class="hint" data-testid="coupon-hint" id="couponHint"></div>
             </div>
             <button class="primary" data-testid="coupon-apply" id="couponApply">Применить</button>
@@ -219,11 +199,9 @@
       </div>
     </section>
 
-    <!-- FEEDBACK -->
     <section class="page hidden" data-page="feedback">
       <div class="card">
         <h2>Обратная связь</h2>
-        <p class="small">Форма специально сделана так, чтобы её было интересно тестировать 🙂</p>
 
         <div class="field">
           <label>Фамилия</label>
@@ -244,7 +222,7 @@
 
         <div class="field">
           <label>Сообщение</label>
-          <textarea data-testid="fb-message" id="fbMessage" rows="4" placeholder="Опиши проблему или идею..."></textarea>
+          <textarea data-testid="fb-message" id="fbMessage" rows="4" placeholder="Сообщение..."></textarea>
           <div class="hint" data-testid="fb-message-hint" id="fbMessageHint"></div>
         </div>
 
@@ -259,9 +237,7 @@
   </main>
 
   <footer class="footer">
-    <div class="small">
-      QA Playground • Для учебных занятий • Версия 1.0
-    </div>
+    <div class="small">Сделал Никита, тьютор</div>
   </footer>
 
   <script src="./app.js"></script>
